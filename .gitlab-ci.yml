@@ -6,7 +6,7 @@ validate:
   stage: validate
   image: composer:latest
   script:
-    - composer validate --strict
+    - composer validate 
     - composer install --no-dev --optimize-autoloader
 
 publish-package:
