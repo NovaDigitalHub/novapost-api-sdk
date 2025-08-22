@@ -8,8 +8,7 @@ default:
   cache:
     key: "php-${CI_JOB_IMAGE}-${CI_COMMIT_REF_SLUG}"
     paths:
-      - vendor/
-      - composer.lock
+      - .composer/cache
     policy: pull-push
   before_script:
     - apk add --no-cache git unzip libzip-dev curl
@@ -24,7 +23,6 @@ validate:
   artifacts:
     paths:
       - vendor/
-      - composer.lock
     expire_in: 1h
 
 code-quality:
@@ -55,7 +53,6 @@ static-analysis:
 
 publish-package:
   stage: publish
-  image: curlimages/curl:latest
   needs:
     - validate
     - static-analysis
