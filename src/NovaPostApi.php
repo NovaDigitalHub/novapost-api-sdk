@@ -15,8 +15,8 @@ use Psr\Http\Client\ClientInterface;
  */
 final class NovaPostApi
 {
-    public const string PRODUCTION_BASE_URL = 'https://api.novapost.com/v.1.0/';
-    public const string SANDBOX_BASE_URL = 'https://api-stage.novapost.pl/v.1.0/';
+    public const PRODUCTION_BASE_URL = 'https://api.novapost.com/v.1.0/';
+    public const SANDBOX_BASE_URL = 'https://api-stage.novapost.pl/v.1.0/';
 
     private ClientInterface $client;
 
