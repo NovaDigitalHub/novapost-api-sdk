@@ -1,5 +1,4 @@
 {
-  "license": "MIT",
   "name": "novadigital/novapost-api-sdk",
   "description": "PHP SDK for Nova Post API",
   "type": "library",
