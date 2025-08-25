@@ -4,14 +4,16 @@ declare(strict_types=1);
 
 namespace NovaDigital\NovaPost\Resources;
 
+use Psr\Http\Client\ClientExceptionInterface;
+
 class Shipment extends AbstractResource
 {
     /**
      * Create a new shipment.
      *
-     * @param array $params
+     * @param  array $params
      * @return array
-     * @throws \NovaDigital\NovaPost\Exception\ApiException
+     * @throws ClientExceptionInterface
      */
     public function create(array $params): array
     {
@@ -21,9 +23,9 @@ class Shipment extends AbstractResource
     /**
      * Get a list of shipments.
      *
-     * @param array $params
+     * @param  array $params
      * @return array
-     * @throws \NovaDigital\NovaPost\Exception\ApiException
+     * @throws ClientExceptionInterface
      */
     public function get(array $params = []): array
     {
@@ -33,9 +35,9 @@ class Shipment extends AbstractResource
     /**
      * Calculate the cost of a shipment.
      *
-     * @param array $params
+     * @param  array $params
      * @return array
-     * @throws \NovaDigital\NovaPost\Exception\ApiException
+     * @throws ClientExceptionInterface
      */
     public function calculate(array $params): array
     {
@@ -45,9 +47,9 @@ class Shipment extends AbstractResource
     /**
      * Track a shipment.
      *
-     * @param array $params
+     * @param  array $params
      * @return array
-     * @throws \NovaDigital\NovaPost\Exception\ApiException
+     * @throws ClientExceptionInterface
      */
     public function track(array $params): array
     {

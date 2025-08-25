@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace NovaDigital\NovaPost\Exception;
 
-class ApiException extends \Exception
+use Exception;
+
+class ApiException extends Exception
 {
 }

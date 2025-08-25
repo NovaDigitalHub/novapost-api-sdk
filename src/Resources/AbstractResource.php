@@ -6,6 +6,7 @@ namespace NovaDigital\NovaPost\Resources;
 
 use GuzzleHttp\Psr7\Request;
 use Psr\Http\Client\ClientInterface;
+use Psr\Http\Client\ClientExceptionInterface;
 
 abstract class AbstractResource
 {
@@ -16,6 +17,9 @@ abstract class AbstractResource
         $this->client = $client;
     }
 
+    /**
+     * @throws ClientExceptionInterface
+     */
     protected function sendRequest(string $method, string $uri, array $data = []): array
     {
         $body = null;

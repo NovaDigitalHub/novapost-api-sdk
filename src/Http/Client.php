@@ -7,6 +7,7 @@ namespace NovaDigital\NovaPost\Http;
 use GuzzleHttp\Exception\GuzzleException;
 use NovaDigital\NovaPost\Exception\ApiException;
 use NovaDigital\NovaPost\JwtTokenProvider;
+use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -28,6 +29,10 @@ class Client implements ClientInterface
         $this->logger = $logger;
     }
 
+    /**
+     * @throws ApiException
+     * @throws ClientExceptionInterface
+     */
     public function sendRequest(RequestInterface $request): ResponseInterface
     {
         $request = $request->withHeader('Authorization', $this->jwtTokenProvider->get());
