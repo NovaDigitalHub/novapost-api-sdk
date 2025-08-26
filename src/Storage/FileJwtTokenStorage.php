@@ -39,11 +39,4 @@ class FileJwtTokenStorage implements JwtTokenStorageInterface
 
         return $data['token'];
     }
-
-    public function delete(): void
-    {
-        if (file_exists($this->filePath)) {
-            @unlink($this->filePath);
-        }
-    }
 }
