@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace NovaDigital\NovaPost\Http;
 
-use NovaDigital\NovaPost\Exception\AuthenticationException;
 use NovaDigital\NovaPost\Exception\TokenExpiredException;
 use NovaDigital\NovaPost\Exception\TokenRefreshException;
 use NovaDigital\NovaPost\Exception\ApiException;
@@ -14,60 +13,59 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Log\LoggerInterface;
+use Exception;
 use Throwable;
 
-class Client implements ClientInterface
+class TokenRetryHandler implements RetryHandlerInterface
 {
     private ClientInterface $httpClient;
     private TokenProviderInterface $tokenProvider;
     private ResponseValidatorInterface $responseValidator;
-    private RetryHandlerInterface $retryHandler;
     private LoggerInterface $logger;
 
     public function __construct(
         ClientInterface $httpClient,
         TokenProviderInterface $tokenProvider,
         ResponseValidatorInterface $responseValidator,
-        RetryHandlerInterface $retryHandler,
         LoggerInterface $logger
     ) {
         $this->httpClient = $httpClient;
         $this->tokenProvider = $tokenProvider;
         $this->responseValidator = $responseValidator;
-        $this->retryHandler = $retryHandler;
         $this->logger = $logger;
     }
 
-    /**
-     * @throws ApiException|TokenExpiredException|TokenRefreshException|AuthenticationException
-     */
-    public function sendRequest(RequestInterface $request): ResponseInterface
+    public function shouldRetry(Exception $exception): bool
     {
+        return $exception instanceof TokenExpiredException;
+    }
+
+    /**
+     * @throws TokenRefreshException|ApiException|Exception
+     */
+    public function handleRetry(RequestInterface $request, Exception $exception): ResponseInterface
+    {
+        if (!$this->shouldRetry($exception)) {
+            throw $exception;
+        }
+
         try {
-            $authRequest = $request->withHeader('Authorization', $this->tokenProvider->get());
-            $response = $this->httpClient->sendRequest($authRequest);
+            $refreshedToken = $this->tokenProvider->refresh();
+            $retryRequest = $request->withHeader('Authorization', $refreshedToken);
+
+            $response = $this->httpClient->sendRequest($retryRequest);
             $this->responseValidator->validate($response);
             return $response;
-        } catch (TokenExpiredException $e) {
-            return $this->retryHandler->handleRetry($request, $e);
         } catch (ApiException $e) {
             throw $e;
         } catch (ClientExceptionInterface $e) {
-            $this->logger->error('HTTP request failed', [
-                'exception' => $e,
-                'request_uri' => (string)$request->getUri(),
-                'request_method' => $request->getMethod()
-            ]);
+            $this->logger->error('Token refresh failed - HTTP client error', ['exception' => $e]);
 
             throw new ApiException('Request failed: ' . $e->getMessage(), $e->getCode(), $e);
         } catch (Throwable $e) {
-            $this->logger->error('Unexpected error during request', [
-                'exception' => $e,
-                'request_uri' => (string)$request->getUri(),
-                'request_method' => $request->getMethod()
-            ]);
+            $this->logger->error('Unexpected error during token retry', ['exception' => $e]);
 
-            throw new ApiException('Unexpected error while sending request', $e->getCode(), $e);
+            throw new ApiException('Unexpected error during retry', $e->getCode(), $e);
         }
     }
 }

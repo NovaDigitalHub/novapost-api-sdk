@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use NovaDigital\NovaPost\DI\Container;
-use NovaDigital\NovaPost\NovaPostApi;
 use NovaDigital\NovaPost\Exception\ApiException;
+use NovaDigital\NovaPost\DI\ContainerBuilder;
 use Psr\Http\Client\ClientExceptionInterface;
+use NovaDigital\NovaPost\NovaPostApi;
 
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
 $dotenv->load();
@@ -16,9 +16,13 @@ $apiKey = $_ENV['API_KEY'] ?? '';
 $useSandbox = (bool)($_ENV['USE_SANDBOX'] ?? true);
 
 try {
-    $container = new Container(['apiKey' => $apiKey, 'useSandbox' => $useSandbox]);
-    /** @var NovaPostApi $novaPostClient */
-    $novaPostClient = $container->get(NovaPostApi::class);
+    $container = (new ContainerBuilder())
+        ->withApiKey($apiKey)
+        ->withSandbox($useSandbox)
+        ->withTimeout(60) // optional
+        ->build();
+    /** @var NovaPostApi $api */
+    $api = $container->get(NovaPostApi::class);
 
     $payload = [
         'amount' => 100.00,
@@ -28,7 +32,7 @@ try {
             ->format('Y-m-d\TH:i:s.u\Z'),
     ];
 
-    $response = $novaPostClient->exchangeRates()->convert($payload);
+    $response = $api->exchangeRates()->convert($payload);
 
     echo "Success: Exchange rates retrieved\n";
 
@@ -66,7 +70,6 @@ try {
     )];
 
     echo "I have {$eurRate['amount']} Euros!\n";
-
 } catch (ApiException $e) {
     echo "API Error: " . $e->getMessage() . " (Code: " . $e->getCode() . ")\n";
 } catch (ClientExceptionInterface $e) {
