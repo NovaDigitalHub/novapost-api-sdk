@@ -20,6 +20,7 @@ validate:
   script:
     - composer validate --strict
     - composer install --no-interaction --optimize-autoloader --prefer-dist
+    - composer dump-autoload -o
   artifacts:
     paths:
       - vendor/
