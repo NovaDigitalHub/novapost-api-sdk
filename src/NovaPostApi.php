@@ -8,6 +8,7 @@ namespace NovaDigital\NovaPost;
 
 use NovaDigital\NovaPost\Resources\Division;
 use NovaDigital\NovaPost\Resources\Shipment;
+use NovaDigital\NovaPost\Resources\Service;
 use Psr\Http\Client\ClientInterface;
 
 /**
@@ -39,5 +40,13 @@ final class NovaPostApi
     public function shipments(): Shipment
     {
         return new Shipment($this->client);
+    }
+
+    /**
+     * @api
+     */
+    public function services(): Service
+    {
+        return new Service($this->client);
     }
 }

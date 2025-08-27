@@ -20,7 +20,7 @@ abstract class AbstractResource
     /**
      * @throws ClientExceptionInterface
      */
-    protected function sendRequest(string $method, string $uri, array $data = []): array
+    protected function sendRequest(string $method, string $uri, array $data = []): array|string
     {
         $body = null;
         if (!empty($data) && in_array($method, ['POST', 'PUT', 'PATCH'])) {
@@ -39,6 +39,9 @@ abstract class AbstractResource
 
         $response = $this->client->sendRequest($request);
 
-        return json_decode($response->getBody()->getContents(), true);
+        $contents = $response->getBody()->getContents();
+        $decoded = json_decode($contents, true);
+
+        return is_array($decoded) ? $decoded : $contents;
     }
 }
