@@ -1,14 +1,13 @@
 <?php
 
-//todo copyrights
-
 declare(strict_types=1);
 
 namespace NovaDigital\NovaPost;
 
+use NovaDigital\NovaPost\Resources\ExchangeRate;
+use NovaDigital\NovaPost\Resources\Dictionary;
 use NovaDigital\NovaPost\Resources\Division;
 use NovaDigital\NovaPost\Resources\Shipment;
-use NovaDigital\NovaPost\Resources\Service;
 use Psr\Http\Client\ClientInterface;
 
 /**
@@ -45,8 +44,16 @@ final class NovaPostApi
     /**
      * @api
      */
-    public function services(): Service
+    public function exchangeRates(): ExchangeRate
     {
-        return new Service($this->client);
+        return new ExchangeRate($this->client);
+    }
+
+    /**
+     * @api
+     */
+    public function dictionary(): Dictionary
+    {
+        return new Dictionary($this->client);
     }
 }

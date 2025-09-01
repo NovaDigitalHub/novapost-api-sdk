@@ -33,42 +33,6 @@ class Shipment extends AbstractResource
     }
 
     /**
-     * Calculate the cost of a shipment.
-     *
-     * @param array $params
-     * @return array
-     * @throws ClientExceptionInterface
-     */
-    public function calculate(array $params): array
-    {
-        return $this->sendRequest('POST', 'shipments/calculations', $params);
-    }
-
-    /**
-     * Track a shipment.
-     *
-     * @param array $params
-     * @return array
-     * @throws ClientExceptionInterface
-     */
-    public function track(array $params): array
-    {
-        return $this->sendRequest('GET', 'shipments/tracking', $params);
-    }
-
-    /**
-     * Retrieve printable shipment documents (PDF).
-     *
-     * @param array $params
-     * @return array|string Validation error or binary PDF content
-     * @throws ClientExceptionInterface
-     */
-    public function print(array $params): array|string
-    {
-        return $this->sendRequest('GET', 'shipments/print', $params);
-    }
-
-    /**
      * Update a shipment by ID. Replace the old shipment with the new data.
      *
      * @param string $id The ID of the shipment to update
@@ -84,12 +48,73 @@ class Shipment extends AbstractResource
     /**
      * Delete a shipment by ID or tracking number.
      *
-     * @param string $idOrTrackingNumber The ID or tracking number (e.g., SHPL0123456789) of the shipment to delete
+     * @param string $idOrNumber The ID or tracking number (e.g., SHPL0123456789) of the shipment to delete
      * @return array
      * @throws ClientExceptionInterface
      */
-    public function delete(string $idOrTrackingNumber): array
+    public function delete(string $idOrNumber): array
     {
-        return $this->sendRequest('DELETE', "shipments/{$idOrTrackingNumber}");
+        return $this->sendRequest('DELETE', "shipments/{$idOrNumber}");
+    }
+
+    /**
+     * Calculate the estimated delivery cost for a shipment.
+     *
+     * @param array $params
+     * @return array
+     * @throws ClientExceptionInterface
+     */
+    public function calculate(array $params): array
+    {
+        return $this->sendRequest('POST', 'shipments/calculations', $params);
+    }
+
+    /**
+     * Retrieve printable shipment documents (PDF).
+     *
+     * @param array $params
+     * @return array|string Validation error or binary PDF content
+     * @throws ClientExceptionInterface
+     */
+    public function print(array $params): array|string
+    {
+        return $this->sendRequest('GET', 'shipments/print', $params);
+    }
+
+    /**
+     * Attach a file for a shipment.
+     *
+     * @param string $id The ID of the shipment
+     * @param array $params The file to attach to the shipment
+     * @return array
+     * @throws ClientExceptionInterface
+     */
+    public function attachDocument(string $id, array $params): array
+    {
+        return $this->sendRequest('POST', "shipments/uploads/{$id}", $params);
+    }
+
+    /**
+     * Retrieve full tracking information for one or multiple shipments.
+     *
+     * @param array $params
+     * @return array
+     * @throws ClientExceptionInterface
+     */
+    public function tracking(array $params): array
+    {
+        return $this->sendRequest('GET', 'shipments/tracking', $params);
+    }
+
+    /**
+     * Retrieve basic tracking information for one or multiple shipments.
+     *
+     * @param array $params
+     * @return array
+     * @throws ClientExceptionInterface
+     */
+    public function trackingHistory(array $params): array
+    {
+        return $this->sendRequest('GET', 'shipments/tracking/history', $params);
     }
 }

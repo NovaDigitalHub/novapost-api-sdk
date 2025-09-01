@@ -13,6 +13,10 @@ class Division extends AbstractResource
     public const DIVISION_CATEGORY_PUDO = 'PUDO';
 
     /**
+     * Get a list of cargo warehouses and parcel lockers.
+     *
+     * @param array $params
+     * @return array
      * @throws ClientExceptionInterface
      */
     public function get(array $params = []): array
