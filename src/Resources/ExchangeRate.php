@@ -6,16 +6,16 @@ namespace NovaDigital\NovaPost\Resources;
 
 use Psr\Http\Client\ClientExceptionInterface;
 
-class Service extends AbstractResource
+class ExchangeRate extends AbstractResource
 {
     /**
-     * Retrieve exchange rates for a specific amount and currency.
+     * Convert an amount from one currency to another.
      *
      * @param array $params
      * @return array
      * @throws ClientExceptionInterface
      */
-    public function exchangeRates(array $params): array
+    public function convert(array $params): array
     {
         return $this->sendRequest('POST', 'exchange-rates/conversion', $params);
     }

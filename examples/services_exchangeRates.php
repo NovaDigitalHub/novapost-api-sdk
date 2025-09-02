@@ -28,7 +28,7 @@ try {
             ->format('Y-m-d\TH:i:s.u\Z'),
     ];
 
-    $response = $novaPostClient->services()->exchangeRates($payload);
+    $response = $novaPostClient->exchangeRates()->convert($payload);
 
     echo "Success: Exchange rates retrieved\n";
 
