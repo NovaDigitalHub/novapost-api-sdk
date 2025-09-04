@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace NovaDigital\NovaPost;
 
 use NovaDigital\NovaPost\Resources\ExchangeRate;
+use NovaDigital\NovaPost\Resources\Subscription;
 use NovaDigital\NovaPost\Resources\Dictionary;
 use NovaDigital\NovaPost\Resources\Division;
 use NovaDigital\NovaPost\Resources\Shipment;
+use NovaDigital\NovaPost\Resources\Pickup;
 use Psr\Http\Client\ClientInterface;
 
 /**
@@ -23,6 +25,14 @@ final class NovaPostApi
     public function __construct(ClientInterface $client)
     {
         $this->client = $client;
+    }
+
+    /**
+     * @api
+     */
+    public function dictionary(): Dictionary
+    {
+        return new Dictionary($this->client);
     }
 
     /**
@@ -52,8 +62,16 @@ final class NovaPostApi
     /**
      * @api
      */
-    public function dictionary(): Dictionary
+    public function pickups(): Pickup
     {
-        return new Dictionary($this->client);
+        return new Pickup($this->client);
+    }
+
+    /**
+     * @api
+     */
+    public function subscriptions(): Subscription
+    {
+        return new Subscription($this->client);
     }
 }

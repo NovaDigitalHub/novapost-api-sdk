@@ -18,6 +18,12 @@ abstract class AbstractResource
     }
 
     /**
+     * Send an HTTP request to the Nova Post API.
+     *
+     * @param string $method HTTP method (GET, POST, PUT, PATCH, DELETE)
+     * @param string $uri API endpoint URI
+     * @param array $data Request data (for POST, PUT, PATCH) or query parameters (for GET)
+     * @return array|string API response data
      * @throws ClientExceptionInterface
      */
     protected function sendRequest(string $method, string $uri, array $data = []): array|string
