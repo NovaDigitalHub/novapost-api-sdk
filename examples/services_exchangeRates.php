@@ -33,7 +33,7 @@ try {
     echo "Success: Exchange rates retrieved\n";
 
     // Actual response sample:
-    $response = [
+    $responseExample = [
         'requestCurrency' => [
             'currencyCode' => 'USD',
             'amount' => 100,

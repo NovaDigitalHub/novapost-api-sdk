@@ -9,21 +9,33 @@ use Psr\Http\Client\ClientExceptionInterface;
 class Dictionary extends AbstractResource
 {
     /**
-     * Get a list of measurement units.
+     * Retrieve a list of measurement units.
      *
-     * @param array $params
+     * Returns measurement units (e.g., pieces, meters, kilograms)
+     * that can be used to describe items using the metric system.
+     *
+     * @see https://api.novapost.com/developers/index.html#get-/dictionary/measurements
+     *
+     * @param array $params Query parameters
      * @return array
      * @throws ClientExceptionInterface
      */
     public function measurements(array $params = []): array
     {
-        return $this->sendRequest('GET', 'dictionary/measurements');
+        return $this->sendRequest('GET', 'dictionary/measurements', $params);
     }
 
     /**
-     * Get a list of available currencies.
+     * Retrieve a list of available currencies.
      *
-     * @param array $params
+     * Returns currencies that can be used when creating transportation documents (shipments).
+     *
+     * Optional parameters:
+     * - codes (array<string>) — Filter by currency codes. Example: ['UAH', 'EUR']
+     *
+     * @see https://api.novapost.com/developers/index.html#get-/dictionary/currencies
+     *
+     * @param array $params Query parameters
      * @return array
      * @throws ClientExceptionInterface
      */
@@ -33,9 +45,28 @@ class Dictionary extends AbstractResource
     }
 
     /**
-     * Search cargo classifiers (UKT ZED) for a keyword and country.
+     * Retrieve a list of cargo classifiers (UKT ZED).
      *
-     * @param array $params
+     * Returns predefined cargo classification entries (e.g., ID, name, description, category, examples)
+     * used to categorize goods when creating transportation documents (shipments).
+     *
+     * Note:
+     * - UKT ZED/HsCode format depends on the destination country:
+     *   • UA — typically 8-digit codes
+     *   • CA, MD — strictly 10-digit codes (any non-numeric characters in HsCode are removed before validation)
+     *
+     * Mandatory parameters:
+     * - country-code (string) — ISO code of the recipient country (e.g., 'MD')
+     * - keyword (string) — Search keyword for the classifier
+     *
+     * Optional parameters:
+     * - fuzzy (bool) — Enable approximate matching
+     * - locale (string) — Language code (ISO 639-1)(e.g., 'uk')
+     * - size (int) — Number of matching classifiers to return
+     *
+     * @see https://api.novapost.com/developers/index.html#get-/dictionary/classifier
+     *
+     * @param array $params Query parameters
      * @return array
      * @throws ClientExceptionInterface
      */

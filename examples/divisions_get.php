@@ -21,7 +21,7 @@ try {
 
     $searchParams = [
         'textSearch' => 'berlin',
-        'divisionCategories' => [Division::DIVISION_CATEGORY_PUDO]
+        'divisionCategories' => [Division::DIVISION_CATEGORY_POSTOMAT]
     ];
 
     $divisions = $novaPostClient->divisions()->get($searchParams);
