@@ -46,10 +46,21 @@ static-analysis:
     - validate
   script:
     - mkdir -p tests/reports
-    - ./vendor/bin/phpstan analyse src tests --level 1 --no-progress --error-format=junit > tests/reports/phpstan.xml
+    - ./vendor/bin/phpstan analyse src --level 5 --no-progress --memory-limit 1G --error-format=junit > tests/reports/phpstan.xml
   artifacts:
     reports:
       junit: tests/reports/phpstan.xml
+    expire_in: 1w
+
+test-unit:
+  stage: test
+  needs: [validate]
+  script:
+    - mkdir -p tests/reports
+    - ./vendor/bin/phpunit --testsuite=Unit
+  artifacts:
+    reports:
+      junit: tests/reports/junit.xml
     expire_in: 1w
 
 publish-package:

@@ -38,6 +38,25 @@ try {
 }
 ```
 
+### Using ContainerBuilder (Advanced Configuration)
+
+For more advanced configuration, you can use the `ContainerBuilder` to customize various aspects of the client:
+
+```php
+use NovaDigital\NovaPost\DI\ContainerBuilder;
+use Psr\Log\NullLogger;
+
+// Create a configured container with a fluent interface
+$container = (new ContainerBuilder())
+    ->withApiKey('YOUR_API_KEY')
+    ->withSandbox() // Enable sandbox mode for testing
+    ->withTimeout(60) // Set a custom timeout in seconds
+    ->build();
+
+// Get the API client instance
+$novaPostClient = $container->get(NovaPostApi::class);
+```
+
 ### Making API Calls
 
 Once you have the client, you can easily access the different API resources. For example, to get a list of divisions:
@@ -115,15 +134,50 @@ $container->set(JwtTokenStorageInterface::class, $jwtTokenStorageFactory);
 $novaPostClient = $container->get(NovaPostApi::class);
 ```
 
+Or with ContainerBuilder:
+
+```php
+// Build the container with custom services
+$container = (new ContainerBuilder())
+    ->withApiKey('YOUR_API_KEY')
+    ->withSandbox()
+    ->withLogger($logger)  // Override default logger
+    ->withHttpClient($httpClient)  // Override default HTTP client
+    ->withTokenStorage(new CustomTokenStorage())  // Override default token storage
+    ->build();
+
+// Get the API client with all custom services
+$novaPostClient = $container->get(NovaPostApi::class);
+```
+
+This approach allows you to:
+1. Replace any service in the dependency injection container
+2. Maintain a clean, fluent interface for configuration
+3. Keep your custom service implementations separate from the SDK
+4. Test with mock services
+
+### Available Service Overrides
+
+You can override the following services using the `ContainerBuilder`:
+
+- `LoggerInterface`: For custom logging
+- `ClientInterface`: For custom HTTP client configuration
+- `JwtTokenStorageInterface`: For custom JWT token storage
+- `ResponseHandlerInterface`: For custom response handling
+- `RetryHandlerInterface`: For custom retry logic
+
+Each service can be overridden using the corresponding `with*` method on the `ContainerBuilder`.
+
 ## PSR Standards Compliance
 
 This SDK adheres to the following PSR standards, ensuring interoperability and modern, high-quality code:
 
-*   **PSR-4: Autoloader**: For autoloading classes.
-*   **PSR-11: Container Interface**: For a flexible dependency injection container.
-*   **PSR-3: Logger Interface**: Allowing you to use any compatible logger.
-*   **PSR-7: HTTP Message Interface**: Used for all API requests and responses.
-*   **PSR-18: HTTP Client**: For sending HTTP requests.
-*   **PSR-12: Extended Coding Standard**: For coding styles.
+* **PSR-4: Autoloader**: For autoloading classes.
+* **PSR-11: Container Interface**: For a flexible dependency injection container.
+* **PSR-3: Logger Interface**: Allowing you to use any compatible logger.
+* **PSR-7: HTTP Message Interface**: Used for all API requests and responses.
+* **PSR-18: HTTP Client**: For sending HTTP requests.
+* **PSR-17: HTTP Factories**: Used internally for creating PSR-7 messages.
+* **PSR-12: Extended Coding Standard**: For coding styles.
 
 This commitment to standards makes the SDK reliable, predictable, and easy to integrate into any modern PHP application.

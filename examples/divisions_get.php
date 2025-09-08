@@ -27,7 +27,6 @@ try {
     $divisions = $novaPostClient->divisions()->get($searchParams);
 
     echo "Success: Retrieved " . count($divisions) . " divisions\n";
-
 } catch (ApiException $e) {
     echo "API Error: " . $e->getMessage() . " (Code: " . $e->getCode() . ")\n";
 } catch (ClientExceptionInterface $e) {
