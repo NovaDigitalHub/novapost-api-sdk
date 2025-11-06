@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace NovaDigital\NovaPost;
 
 use Exception;
-use NovaDigital\NovaPost\Http\AuthClient;
 use NovaDigital\NovaPost\Exception\ApiException;
 use NovaDigital\NovaPost\Exception\TokenExpiredException;
 use NovaDigital\NovaPost\Exception\TokenRefreshException;
+use NovaDigital\NovaPost\Http\AuthClientInterface;
 use NovaDigital\NovaPost\Storage\JwtTokenStorageInterface;
 use NovaDigital\NovaPost\Exception\AuthenticationException;
 
@@ -19,15 +19,10 @@ class JwtTokenProvider implements TokenProviderInterface
 
     private ?string $jwtToken = null;
     private ?int $tokenExpiry = null;
-    private JwtTokenStorageInterface $jwtTokenStorage;
-    private AuthClient $authenticator;
-
     public function __construct(
-        JwtTokenStorageInterface $jwtTokenStorage,
-        AuthClient $authenticator
+        private JwtTokenStorageInterface $jwtTokenStorage,
+        private AuthClientInterface $authClient
     ) {
-        $this->jwtTokenStorage = $jwtTokenStorage;
-        $this->authenticator = $authenticator;
     }
 
     /**
@@ -88,7 +83,7 @@ class JwtTokenProvider implements TokenProviderInterface
      */
     private function fetch(): void
     {
-        $this->jwtToken = $this->authenticator->getToken();
+        $this->jwtToken = $this->authClient->getToken();
         $this->extractExpiry($this->jwtToken);
 
         if ($this->tokenExpiry === null) {

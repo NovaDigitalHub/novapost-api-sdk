@@ -21,9 +21,24 @@ declare(strict_types=1);
 
 namespace NovaDigital\NovaPost;
 
-interface TokenProviderInterface
-{
-    public function get(): string;
+use NovaDigital\NovaPost\DI\ContainerBuilder;
 
-    public function refresh(): string;
+final class NovaPostApiFactory
+{
+    public function __invoke(
+        string $apiKey,
+        ?ContainerBuilder $containerBuilder = null,
+        bool $useSandbox = false,
+    ): NovaPostApi {
+        if (!$containerBuilder) {
+            $containerBuilder = new ContainerBuilder();
+        }
+
+        $container = $containerBuilder
+            ->setParameter('apiKey', $apiKey)
+            ->setParameter('useSandbox', $useSandbox)
+            ->build();
+
+        return new NovaPostApi($container);
+    }
 }

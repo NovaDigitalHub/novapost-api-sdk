@@ -8,7 +8,7 @@ use NovaDigital\NovaPost\Exception\ApiException;
 use NovaDigital\NovaPost\Exception\AuthenticationException;
 use NovaDigital\NovaPost\Exception\TokenExpiredException;
 use NovaDigital\NovaPost\Exception\TokenRefreshException;
-use NovaDigital\NovaPost\Http\Client as NovaPostClient;
+use NovaDigital\NovaPost\Http\NovaPostClient;
 use NovaDigital\NovaPost\Http\ResponseValidatorInterface;
 use NovaDigital\NovaPost\Http\RetryHandlerInterface;
 use NovaDigital\NovaPost\TokenProviderInterface;
@@ -20,7 +20,7 @@ use GuzzleHttp\HandlerStack;
 use Psr\Log\LoggerInterface;
 use GuzzleHttp\Client;
 
-final class ClientTest extends TestCase
+final class NovaPostClientTest extends TestCase
 {
     private TokenProviderInterface $tokenProvider;
     private MockHandler $mockHandler;

@@ -10,12 +10,9 @@ use Psr\Http\Client\ClientExceptionInterface;
 
 abstract class AbstractResource
 {
-    protected ClientInterface $client;
-
-    public function __construct(ClientInterface $client)
-    {
-        $this->client = $client;
-    }
+    public function __construct(
+        protected ClientInterface $client,
+    ) {}
 
     /**
      * Send an HTTP request to the Nova Post API.
@@ -38,9 +35,9 @@ abstract class AbstractResource
         }
 
         $request = new Request($method, $uri, [], $body);
-
         if ($body !== null) {
-            $request = $request->withHeader('Content-Type', 'application/json');
+            $request = $request->withHeader('Content-Type', 'application/json')
+                ->withHeader('User-Agent', 'NovaPost-SDK/1.0');
         }
 
         $response = $this->client->sendRequest($request);
