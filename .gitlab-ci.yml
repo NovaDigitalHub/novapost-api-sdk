@@ -32,12 +32,7 @@ code-quality:
   dependencies:
     - validate
   script:
-    - mkdir -p tests/reports
-    - ./vendor/bin/phpcs --standard=PSR12 src tests --report=junit --report-file=tests/reports/phpcs.xml || true
-  artifacts:
-    reports:
-      junit: tests/reports/phpcs.xml
-  allow_failure: true
+    - ./vendor/bin/phpcs --standard=PSR12 src tests
 
 static-analysis:
   stage: test
@@ -52,18 +47,3 @@ test-unit:
   needs: [validate]
   script:
     - ./vendor/bin/phpunit --testsuite=Unit
-
-publish-package:
-  stage: publish
-  needs:
-    - validate
-    - static-analysis
-  rules:
-    - if: $CI_COMMIT_TAG
-  script: |
-    echo "Publishing novadigital/novapost-api-sdk to GitLab Package Registry..."
-    curl --header "JOB-TOKEN: $CI_JOB_TOKEN" \
-         --data tag=$CI_COMMIT_TAG \
-         --data sha=$CI_COMMIT_SHA \
-         "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/composer"
-    echo "Package novadigital/novapost-api-sdk published successfully with version ${CI_COMMIT_TAG}"
