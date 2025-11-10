@@ -6,17 +6,17 @@ namespace NovaDigital\NovaPost\Storage;
 
 class FileJwtTokenStorage implements JwtTokenStorageInterface
 {
+    private const FILE_PATH = 'novapost_api_sdk_jwt_token.json';
     private string $filePath;
 
-    public function __construct(string $filePath)
+    public function __construct()
     {
-        $this->filePath = $filePath;
+        $this->filePath = sys_get_temp_dir() . DIRECTORY_SEPARATOR .  self::FILE_PATH;
     }
 
     public function save(string $token): void
     {
         $data = ['token' => $token];
-
         file_put_contents($this->filePath, json_encode($data), LOCK_EX);
     }
 

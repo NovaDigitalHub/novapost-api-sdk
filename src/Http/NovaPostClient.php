@@ -16,26 +16,15 @@ use Psr\Http\Client\ClientInterface;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
-class Client implements ClientInterface
+class NovaPostClient implements ClientInterface
 {
-    private ClientInterface $httpClient;
-    private TokenProviderInterface $tokenProvider;
-    private ResponseValidatorInterface $responseValidator;
-    private RetryHandlerInterface $retryHandler;
-    private LoggerInterface $logger;
-
     public function __construct(
-        ClientInterface $httpClient,
-        TokenProviderInterface $tokenProvider,
-        ResponseValidatorInterface $responseValidator,
-        RetryHandlerInterface $retryHandler,
-        LoggerInterface $logger
+        private ClientInterface $httpClient,
+        private TokenProviderInterface $tokenProvider,
+        private ResponseValidatorInterface $responseValidator,
+        private RetryHandlerInterface $retryHandler,
+        private LoggerInterface $logger
     ) {
-        $this->httpClient = $httpClient;
-        $this->tokenProvider = $tokenProvider;
-        $this->responseValidator = $responseValidator;
-        $this->retryHandler = $retryHandler;
-        $this->logger = $logger;
     }
 
     /**

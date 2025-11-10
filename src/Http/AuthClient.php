@@ -14,7 +14,7 @@ use Psr\Http\Client\ClientInterface;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
-class AuthClient
+class AuthClient implements AuthClientInterface
 {
     private const ENDPOINT_TEMPLATE = 'clients/authorization?apiKey=%s';
     private const HTTP_STATUS_MESSAGES = [
@@ -23,22 +23,12 @@ class AuthClient
         429 => 'Rate limit exceeded - please try again later'
     ];
 
-    private ClientInterface $httpClient;
-    private RequestFactoryInterface $requestFactory;
-    private LoggerInterface $logger;
-    private string $apiKey;
-
     public function __construct(
-        ClientInterface $httpClient,
-        RequestFactoryInterface $requestFactory,
-        LoggerInterface $logger,
-        string $apiKey
-    ) {
-        $this->httpClient = $httpClient;
-        $this->requestFactory = $requestFactory;
-        $this->logger = $logger;
-        $this->apiKey = $apiKey;
-    }
+        private ClientInterface $httpClient,
+        private RequestFactoryInterface $requestFactory,
+        private LoggerInterface $logger,
+        private string $apiKey
+    ) {}
 
     /**
      * @throws AuthenticationException|ApiException

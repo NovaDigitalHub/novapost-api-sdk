@@ -18,21 +18,12 @@ use Throwable;
 
 class TokenRetryHandler implements RetryHandlerInterface
 {
-    private ClientInterface $httpClient;
-    private TokenProviderInterface $tokenProvider;
-    private ResponseValidatorInterface $responseValidator;
-    private LoggerInterface $logger;
-
     public function __construct(
-        ClientInterface $httpClient,
-        TokenProviderInterface $tokenProvider,
-        ResponseValidatorInterface $responseValidator,
-        LoggerInterface $logger
+        private ClientInterface $httpClient,
+        private TokenProviderInterface $tokenProvider,
+        private ResponseValidatorInterface $responseValidator,
+        private LoggerInterface $logger
     ) {
-        $this->httpClient = $httpClient;
-        $this->tokenProvider = $tokenProvider;
-        $this->responseValidator = $responseValidator;
-        $this->logger = $logger;
     }
 
     public function shouldRetry(Exception $exception): bool

@@ -27,7 +27,8 @@ use NovaDigital\NovaPost\Resources\Dictionary;
 use NovaDigital\NovaPost\Resources\Division;
 use NovaDigital\NovaPost\Resources\Shipment;
 use NovaDigital\NovaPost\Resources\Pickup;
-use Psr\Http\Client\ClientInterface;
+use NovaDigital\NovaPost\Http\NovaPostClient;
+use Psr\Container\ContainerInterface;
 
 /**
  * @api
@@ -37,19 +38,18 @@ final class NovaPostApi
     public const PRODUCTION_BASE_URL = 'https://api.novapost.com/v.1.0/';
     public const SANDBOX_BASE_URL = 'https://api-stage.novapost.pl/v.1.0/';
 
-    private ClientInterface $client;
+    private array $instances = [];
 
-    public function __construct(ClientInterface $client)
-    {
-        $this->client = $client;
-    }
+    public function __construct(
+        private ContainerInterface $container
+    ) {}
 
     /**
      * @api
      */
     public function dictionary(): Dictionary
     {
-        return new Dictionary($this->client);
+        return $this->getResource(Dictionary::class);
     }
 
     /**
@@ -57,7 +57,7 @@ final class NovaPostApi
      */
     public function divisions(): Division
     {
-        return new Division($this->client);
+        return $this->getResource(Division::class);
     }
 
     /**
@@ -65,7 +65,7 @@ final class NovaPostApi
      */
     public function shipments(): Shipment
     {
-        return new Shipment($this->client);
+        return $this->getResource(Shipment::class);
     }
 
     /**
@@ -73,7 +73,7 @@ final class NovaPostApi
      */
     public function exchangeRates(): ExchangeRate
     {
-        return new ExchangeRate($this->client);
+        return $this->getResource(ExchangeRate::class);
     }
 
     /**
@@ -81,7 +81,7 @@ final class NovaPostApi
      */
     public function pickups(): Pickup
     {
-        return new Pickup($this->client);
+        return $this->getResource(Pickup::class);
     }
 
     /**
@@ -89,6 +89,21 @@ final class NovaPostApi
      */
     public function subscriptions(): Subscription
     {
-        return new Subscription($this->client);
+        return $this->getResource(Subscription::class);
+    }
+
+    private function getResource(string $class): object
+    {
+        if (isset($this->instances[$class])) {
+            return $this->instances[$class];
+        }
+
+        if ($this->container->has($class)) {
+            $instance = $this->container->get($class);
+        } else {
+            $instance = new $class($this->container->get(NovaPostClient::class));
+        }
+
+        return $this->instances[$class] = $instance;
     }
 }
