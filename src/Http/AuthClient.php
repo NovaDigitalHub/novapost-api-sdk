@@ -28,7 +28,8 @@ class AuthClient implements AuthClientInterface
         private RequestFactoryInterface $requestFactory,
         private LoggerInterface $logger,
         private string $apiKey
-    ) {}
+    ) {
+    }
 
     /**
      * @throws AuthenticationException|ApiException

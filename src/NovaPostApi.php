@@ -23,10 +23,12 @@ namespace NovaDigital\NovaPost;
 
 use NovaDigital\NovaPost\Resources\ExchangeRate;
 use NovaDigital\NovaPost\Resources\Subscription;
+use NovaDigital\NovaPost\Resources\Webhooks;
 use NovaDigital\NovaPost\Resources\Dictionary;
 use NovaDigital\NovaPost\Resources\Division;
 use NovaDigital\NovaPost\Resources\Shipment;
 use NovaDigital\NovaPost\Resources\Pickup;
+use NovaDigital\NovaPost\Resources\Registry;
 use NovaDigital\NovaPost\Http\NovaPostClient;
 use Psr\Container\ContainerInterface;
 
@@ -42,7 +44,8 @@ final class NovaPostApi
 
     public function __construct(
         private ContainerInterface $container
-    ) {}
+    ) {
+    }
 
     /**
      * @api
@@ -90,6 +93,22 @@ final class NovaPostApi
     public function subscriptions(): Subscription
     {
         return $this->getResource(Subscription::class);
+    }
+
+    /**
+     * @api
+     */
+    public function webhooks(): Webhooks
+    {
+        return $this->getResource(Webhooks::class);
+    }
+
+    /**
+     * @api
+     */
+    public function registry(): Registry
+    {
+        return $this->getResource(Registry::class);
     }
 
     private function getResource(string $class): object
