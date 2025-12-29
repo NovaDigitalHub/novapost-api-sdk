@@ -242,4 +242,89 @@ class Shipment extends AbstractResource
     {
         return $this->sendRequest('GET', 'shipments/tracking/history', $params);
     }
+
+    /**
+     * Create a Light Return shipment after the original order has been delivered.
+     *
+     * This method allows customers to create a return shipment after delivery,
+     * regardless of who handled the last mile (Nova Post or a partner).
+     *
+     * Requirements:
+     * - The parent shipment must have **Delivered** status
+     * - The parent shipment must include the **AllowedLightReturn** service
+     * - The return must be created within the allowed return period
+     * - No Light Return has already been created for the same parent shipment
+     *
+     * Mandatory parameters:
+     * - number (string) — The parent shipment number for which the return is initiated
+     *
+     * Optional parameters:
+     * - divisionId (string) — Division that will process the return
+     * - senderPhone (string) — Phone number of the sender for the return shipment
+     * - addressParts (object) — Address structure for pickup or delivery
+     * - invoice (object) — Customs data for cross-border returns
+     * - parcels (array) — Parcel details
+     *
+     * Note: If optional parameters are not specified, their values are automatically
+     * inherited from the parent shipment.
+     *
+     * @see https://api.novapost.com/developers/index.html#post-/shipments/light-return
+     *
+     * @param array $params Request parameters
+     * @return array
+     * @throws ClientExceptionInterface
+     */
+    public function createLightReturn(array $params): array
+    {
+        return $this->sendRequest('POST', 'shipments/light-return', $params);
+    }
+
+    /**
+     * Get verification status of international shipments (UA→World direction).
+     *
+     * Returns verification statuses for international shipments from Ukraine to World.
+     * Responses and errors from the core system are proxied unchanged.
+     *
+     * Mandatory parameters:
+     * - refs (array<string>) — Array of shipment references (must not be empty)
+     * - state (string) — Verification state filter. Allowed: Order | Closed | allOrders
+     *
+     * @see https://api.novapost.com/developers/index.html#get-/shipments/international/status
+     *
+     * @param array $params Query parameters
+     * @return array
+     * @throws ClientExceptionInterface
+     */
+    public function getInternationalStatus(array $params): array
+    {
+        return $this->sendRequest('GET', 'shipments/international/status', $params);
+    }
+
+    /**
+     * Upload supporting documents to a specific shipment by its ID.
+     *
+     * This is an alternative method for attaching invoices, product specifications,
+     * customs declarations, or other shipment-related documents.
+     *
+     * File naming:
+     * - If "fileName" parameter is provided, the uploaded file will be stored with that name
+     * - If "fileName" is not provided, the default file name will be set to "invoice"
+     *
+     * Mandatory parameters:
+     * - file (string) — Base64-encoded document file (PDF, JPEG, or other supported formats)
+     *
+     * Optional parameters:
+     * - fileName (string) — File name (defaults to "invoice" if not provided)
+     *
+     * @see https://api.novapost.com/developers/index.html#post-/shipments/uploads/-id-
+     *
+     * @param string $id Unique identifier of the shipment to which the files are attached
+     * @param array $params Request parameters
+     * @return array
+     * @throws ClientExceptionInterface
+     */
+    public function uploadDocument(string $id, array $params): array
+    {
+        return $this->sendRequest('POST', "shipments/uploads/{$id}", $params);
+    }
 }

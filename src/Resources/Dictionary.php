@@ -74,4 +74,31 @@ class Dictionary extends AbstractResource
     {
         return $this->sendRequest('GET', 'dictionary/classifier', $params);
     }
+
+    /**
+     * Get customs-fees settings for a specific destination country.
+     *
+     * This method provides country-specific rules that determine whether a sender from Ukraine
+     * is allowed to pay customs duties and the maximum declared parcel value for which this
+     * option is permitted.
+     *
+     * If the returned `declaredCost` limit is exceeded, the sender cannot act as the customs-fee payer.
+     * In such cases, the `payerFeesCustoms` parameter must be set to `Recipient`, as only the
+     * recipient is allowed to pay the customs duties for parcels exceeding this value.
+     *
+     * Response fields:
+     * - customFeeActive (bool) — Indicates if sender can pay customs duties (true/false)
+     * - declaredCost (number) — Maximum parcel value (in recipient country's currency)
+     *   for which the sender may pay customs duties
+     *
+     * @see https://api.novapost.com/developers/index.html#get-/dictionary/customs-fees/-code-
+     *
+     * @param string $countryCode ISO 3166-1 Alpha-2 country code (e.g., 'PL', 'DE', 'FR')
+     * @return array
+     * @throws ClientExceptionInterface
+     */
+    public function customsFees(string $countryCode): array
+    {
+        return $this->sendRequest('GET', "dictionary/customs-fees/{$countryCode}");
+    }
 }

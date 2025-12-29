@@ -12,7 +12,8 @@ abstract class AbstractResource
 {
     public function __construct(
         protected ClientInterface $client,
-    ) {}
+    ) {
+    }
 
     /**
      * Send an HTTP request to the Nova Post API.
